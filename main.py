@@ -18,7 +18,7 @@ bot = Bot(token=os.getenv("BOT_TOKEN")) # from .env file
 dp = Dispatcher()
 
 class IMEICheckState(StatesGroup):
-    fill_imei = State() # also may be serial
+    fill_imei = State() # also may be s/m
     fill_captcha = State()
 
 def return_keyboard(text):
@@ -29,13 +29,13 @@ def return_keyboard(text):
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     builder = InlineKeyboardBuilder()
-    builder.button(text="Check IMEI or Serial Number", callback_data="check_imei")
+    builder.button(text="Check IMEI or S/N", callback_data="check_imei")
     # builder.button(text="Check 20-digit security code", callback_data="security_code")
-    builder.button(text="Where I can find IMEI and Serial Number?", callback_data="find_imei_sn_help")
+    builder.button(text="Where I can find IMEI and S/N?", callback_data="find_imei_sn_help")
     builder.adjust(1)
 
     await message.answer(
-        "Hey! This is Xiaomi Product Authentication. With this bot you can check your IMEI or Serial Number and get details like model, country, and manufacture date for your Xiaomi.\n\nWorking using https://www.mi.com/global/verify.",
+        "Hey! This is Xiaomi Product Authentication. With this bot you can check your IMEI or S/N and get details like model, country, and manufacture date for your Xiaomi.\n\nWorking using https://www.mi.com/global/verify.",
         reply_markup=builder.as_markup()
     )
 
@@ -49,13 +49,13 @@ async def cancel_handler(callback: types.CallbackQuery, state: FSMContext):
 # Check IMEI FSM
 @dp.callback_query(StateFilter(None), F.data == "check_imei")
 async def fill_imei(callback: types.CallbackQuery, state: FSMContext):
-    await callback.message.answer(text="Please enter IMEI or Serial Number:", reply_markup=return_keyboard("Cancel"))
+    await callback.message.answer(text="Please enter IMEI or S/N:", reply_markup=return_keyboard("Cancel"))
     await state.set_state(IMEICheckState.fill_imei)
     await callback.answer()
 
 @dp.message(IMEICheckState.fill_imei)
 async def fill_captcha(message: types.Message, state: FSMContext):
-    imei = message.text.strip() # it also may be serial number, so you can't put check for 15 symbols length lmao
+    imei = message.text.strip() # it also may be s/n, so you can't put check for 15 symbols length lmao
 
     # You need the same session to generate captcha and send request to check IMEI
     session = aiohttp.ClientSession()
@@ -96,22 +96,22 @@ async def fill_captcha(message: types.Message, state: FSMContext):
         # parse
         json_text = text[start + len("JSON_CALLBACK("):end]
         json_data = json.loads(json_text)
-        device_data = json_data["data"]
         code = int(json_data["code"])
         match code:
             case 1:
-                converted_date = datetime.datetime.utcfromtimestamp(device_data["add_time"]).strftime('%d/%m/%Y %H:%M:%S')
+                device_data = json_data["data"]
+                converted_date = datetime.datetime.fromtimestamp(device_data["add_time"], tz=datetime.timezone.utc).strftime('%d/%m/%Y %H:%M:%S')
                 await message.answer(f"Product name: {device_data[f"goods_name"]}\nManufacture date: {converted_date}\nCounty: {device_data["country_text"]}", reply_markup=return_keyboard("Return to Menu"))
             case 70011:
                 await message.answer("Invalid Captcha, Try again.", reply_markup=return_keyboard("Return to Menu"))
             case 70013 | 70017:
-                await message.answer("IMEI or Serial Number doesn't exist.", reply_markup=return_keyboard("Return to Menu"))
+                await message.answer("IMEI or S/N doesn't exist.", reply_markup=return_keyboard("Return to Menu"))
             case _:
                 await message.answer("Server is busy, please try again later.", reply_markup=return_keyboard("Return to Menu"))
     else:
         await message.answer("Invalid Captcha, Try again.", reply_markup=return_keyboard("Return to Menu"))
 
-    session.close()
+    await session.close()
     await state.clear()
 
 @dp.callback_query(F.data == "find_imei_sn_help")
