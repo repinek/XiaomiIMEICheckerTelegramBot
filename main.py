@@ -109,7 +109,7 @@ async def fill_captcha(message: types.Message, state: FSMContext):
                             "\nIf your phone shows a GLOBAL firmware with a locked bootloader, "
                             "it means the device is running an unofficial, modified ROM."
                         )
-
+d
                     case "Greenland":
                         additional_text = (
                             "It seems that your device has been refurbished. "
