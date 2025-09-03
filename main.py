@@ -100,14 +100,36 @@ async def fill_captcha(message: types.Message, state: FSMContext):
         match code:
             case 1:
                 device_data = json_data["data"]
+                match device_data["country_text"]:
+                    case "China":
+                        additional_text = (
+                            "However, the device you purchased is a China version (CN), "
+                            "not the official GLOBAL one. This may affect supported languages, "
+                            "network bands, and overall user experience."
+                            "\nIf your phone shows a GLOBAL firmware with a locked bootloader, "
+                            "it means the device is running an unofficial, modified ROM."
+                        )
+
+                    case "Greenland":
+                        additional_text = (
+                            "It seems that your device has been refurbished. "
+                            "This usually means it was previously returned, repaired or restored "
+                            "to working condition by the third-party service. "
+                            "Refurbished devices can still function well, but they may have replaced "
+                            "parts and won’t always match the original factory condition and description. "
+                            "For example, the color may be different from what is written here."
+                        )
+                    case _:
+                        additional_text = "Congratulations! You can be assured the phone you have purchased is the official international version."
+
                 converted_date = datetime.datetime.fromtimestamp(device_data["add_time"], tz=datetime.timezone.utc).strftime('%d/%m/%Y %H:%M:%S')
-                await message.answer(f"Product name: {device_data[f"goods_name"]}\nManufacture date: {converted_date}\nCounty: {device_data["country_text"]}", reply_markup=return_keyboard("Return to Menu"))
+                await message.answer(f"Product name: {device_data[f"goods_name"]}\nManufacture date: {converted_date}\nCounty: {device_data["country_text"]}\n\n{additional_text}", reply_markup=return_keyboard("Return to Menu"))
             case 70011:
                 await message.answer("Invalid Captcha, Try again.", reply_markup=return_keyboard("Return to Menu"))
             case 70013 | 70017:
                 await message.answer("IMEI or S/N doesn't exist.", reply_markup=return_keyboard("Return to Menu"))
             case _:
-                await message.answer("Server is busy, please try again later.", reply_markup=return_keyboard("Return to Menu"))
+                await message.answer("Xiaomi Server is busy, please try again later.", reply_markup=return_keyboard("Return to Menu"))
     else:
         await message.answer("Invalid Captcha, Try again.", reply_markup=return_keyboard("Return to Menu"))
 
