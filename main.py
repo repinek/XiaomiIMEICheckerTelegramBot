@@ -18,8 +18,12 @@ bot = Bot(token=os.getenv("BOT_TOKEN")) # from .env file
 dp = Dispatcher()
 
 class IMEICheckState(StatesGroup):
-    fill_imei = State() # also may be s/m
+    fill_imei = State() # also may be s/n
     fill_captcha = State()
+
+captcha_image_url = "https://buy.mi.com/en/other/getimage" # generate captcha img url
+check_imei_url = "https://buy.mi.com/en/other/checkimei"
+path_to_captcha_image = "media/captcha.png"
 
 def return_keyboard(text):
     builder = InlineKeyboardBuilder()
@@ -31,6 +35,14 @@ async def cmd_start(message: types.Message):
     builder = InlineKeyboardBuilder()
     builder.button(text="Check IMEI or S/N", callback_data="check_imei")
     # builder.button(text="Check 20-digit security code", callback_data="security_code")
+    '''
+    I'm too lazy to add 20digit security code checking it so:
+    Get captcha: https://captcha.hd.mi.com/captcha?style=digit
+    Verify captcha and check security code: https://captcha.hd.mi.com/captcha/auth
+    Check browser DevTools for headers.
+    and also Product Types for it:
+    ProductTypes={0:"Mi Adapter / Cable", 1:"Mi Power Bank", 2:"Mi Pad", 3:"Mi Bluetooth Headset", 4:"Mi Air Purifier Filter", 5:"Mi Water Purifier Filter", 6:"Mi Electric Toothbrush", 7:"Mi Electric Shaver"}
+    '''
     builder.button(text="Where I can find IMEI and S/N?", callback_data="find_imei_sn_help")
     builder.adjust(1)
 
@@ -61,8 +73,7 @@ async def fill_captcha(message: types.Message, state: FSMContext):
     session = aiohttp.ClientSession()
     await state.update_data(imei=imei, session=session) # save imei and session to state
 
-    captcha_image_url = f"https://buy.mi.com/en/other/getimage" # generate captcha img
-    path_to_captcha_image = "media/captcha.png" # download message cuz I can't figure how to use the same session for answer_photo
+    # download message cuz I can't figure how to use the same session for answer_photo
     async with session.get(captcha_image_url) as response:
         image = await response.read()
         with open(path_to_captcha_image, "wb") as f:
@@ -79,23 +90,16 @@ async def fill_captcha(message: types.Message, state: FSMContext):
     session = user_data["session"]
 
     if len(captcha) == 4:
-        url = "https://buy.mi.com/en/other/checkimei"
         params = {
-            "jsonpcallback": "JSON_CALLBACK",
             "keyword": user_data["imei"],
             "vcode": captcha,
         }
 
-        async with session.get(url, params=params) as response:
+        async with session.get(check_imei_url, params=params) as response:
             text = await response.text()
             print(text)
 
-        # remove uhhh
-        start = text.find("JSON_CALLBACK(")
-        end = text.rfind(");")
-        # parse
-        json_text = text[start + len("JSON_CALLBACK("):end]
-        json_data = json.loads(json_text)
+        json_data = json.loads(text)
         code = int(json_data["code"])
         match code:
             case 1:
@@ -109,7 +113,7 @@ async def fill_captcha(message: types.Message, state: FSMContext):
                             "\nIf your phone shows a GLOBAL firmware with a locked bootloader, "
                             "it means the device is running an unofficial, modified ROM."
                         )
-d
+
                     case "Greenland":
                         additional_text = (
                             "It seems that your device has been refurbished. "
