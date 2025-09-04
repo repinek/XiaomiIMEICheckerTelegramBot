@@ -2,7 +2,8 @@
 
 Telegram bot built with [aiogram](https://github.com/aiogram/aiogram) that directly uses [mi.com/global/verify](https://www.mi.com/global/verify) to check Xiaomi IMEI or S/N get details like model, country, and manufacture date for your Xiaomi. 
 
-## Screenshots
+## Screenshot
+<img width="200" height="297" alt="image" src="https://github.com/user-attachments/assets/0d5f985b-b1e1-44e5-a03c-f0db7be235da" />
 
 ## Usage
 1. Clone the repo
