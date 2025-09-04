@@ -97,7 +97,6 @@ async def fill_captcha(message: types.Message, state: FSMContext):
 
         async with session.get(check_imei_url, params=params) as response:
             text = await response.text()
-            print(text)
 
         json_data = json.loads(text)
         code = int(json_data["code"])
