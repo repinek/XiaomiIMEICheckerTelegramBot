@@ -92,7 +92,7 @@ async def fill_captcha(message: types.Message, state: FSMContext):
 
     imei = message.text.strip()
 
-    # TODO: add validation
+    # TODO: add validation (not necessary because s\n can have irregular format)
     # if not (len(imei) == 15 and imei.isdigit()):
 
     # You need the same session to generate captcha and send request to check IMEI
@@ -176,7 +176,7 @@ async def imei_help(callback: types.CallbackQuery) -> None:
         return
 
     await callback.message.answer_photo(
-        photo=FSInputFile(path="media/imei-help.png"),
+        photo=FSInputFile(path="../media/imei-help.png"), # IDK about this path, you can use webfile from xiaomi servers
         caption=MESSAGES["imei_help"],
     )
 
