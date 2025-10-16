@@ -12,7 +12,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import BufferedInputFile, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from XiaomiIMEICheckerTelegramBot.config import (
+from bot.config import (
     BOT_TOKEN,
     CAPTCHA_IMAGE_URL,
     CHECK_IMEI_URL,
@@ -176,7 +176,7 @@ async def imei_help(callback: types.CallbackQuery) -> None:
         return
 
     await callback.message.answer_photo(
-        photo=FSInputFile(path="../media/imei-help.png"), # IDK about this path, you can use webfile from xiaomi servers
+        photo=FSInputFile(path="./media/imei-help.png"), # IDK about this path, you can use webfile from xiaomi serverss
         caption=MESSAGES["imei_help"],
     )
 

@@ -1,6 +1,7 @@
 # Xiaomi IMEI Checker Telegram Bot
 
-Telegram bot built with [aiogram](https://github.com/aiogram/aiogram) that directly uses [mi.com/global/verify](https://www.mi.com/global/verify) to check Xiaomi IMEI or S/N and get details like model, country, and manufacture date for your Xiaomi.\n
+Telegram bot built with [aiogram](https://github.com/aiogram/aiogram) that directly uses [mi.com/global/verify](https://www.mi.com/global/verify)
+to check Xiaomi IMEI or S/N and get details like model, country, and manufacture date for your Xiaomi.\n
 Works similar to [Mi Firm IMEI Checker](https://mifirm.net/imei)
 
 ## Screenshot
@@ -12,14 +13,14 @@ Works similar to [Mi Firm IMEI Checker](https://mifirm.net/imei)
 git clone https://repinek/XiaomiIMEICheckerTelegramBot
 cd XiaomiIMEICheckerTelegramBot
 ```
-2. Install requirements:
+2. Install dependencies:
 ```
-pip install -r requirements.txt
+uv sync
 ```
 3. Rename ```.env.example``` to ```.env``` and change to your token from [@BotFather](https://t.me/botfather)
-4. Run:
+4. Run the bot:
 ```
-python main.py
+uv run -m bot.main
 ```
 
 ## How it works? 
