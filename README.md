@@ -10,7 +10,7 @@ Works similar to [Mi Firm IMEI Checker](https://mifirm.net/imei)
 ## Usage
 1. Clone the repo
 ```
-git clone https://repinek/XiaomiIMEICheckerTelegramBot
+git clone https://github.com/repinek/XiaomiIMEICheckerTelegramBot.git
 cd XiaomiIMEICheckerTelegramBot
 ```
 2. Install dependencies:
