@@ -55,6 +55,7 @@ async def cmd_start(message: types.Message) -> None:
     Check browser DevTools for headers.
     and also Product Types for it:
     ProductTypes={0:"Mi Adapter / Cable", 1:"Mi Power Bank", 2:"Mi Pad", 3:"Mi Bluetooth Headset", 4:"Mi Air Purifier Filter", 5:"Mi Water Purifier Filter", 6:"Mi Electric Toothbrush", 7:"Mi Electric Shaver"}
+    can be found in js
     """
 
     await message.answer(
@@ -176,7 +177,7 @@ async def imei_help(callback: types.CallbackQuery) -> None:
         return
 
     await callback.message.answer_photo(
-        photo=FSInputFile(path="./media/imei-help.png"), # IDK about this path, you can use webfile from xiaomi serverss
+        photo=FSInputFile(path="./media/imei-help.png"), # IDK about this path, you can use webfile from xiaomi servers
         caption=MESSAGES["imei_help"],
     )
 

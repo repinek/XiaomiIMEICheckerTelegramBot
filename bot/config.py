@@ -14,8 +14,7 @@ MESSAGES = {
     "greeting": (
         "Hey! This is Xiaomi Product Authentication. "
         "With this bot you can check your IMEI or S/N and get details like model, country, "
-        "and manufacture date for your Xiaomi.\n\n"
-        "Working using https://www.mi.com/global/verify."
+        "and manufacture date for your Xiaomi device.\n\n"
     ),
     "enter_imei": "Please enter IMEI or S/N:",
     "enter_captcha": "Please fill the captcha to continue",
