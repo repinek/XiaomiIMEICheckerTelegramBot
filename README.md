@@ -51,3 +51,7 @@ python -m bot.main
 ```
 
 *For details regarding the 20-digit security code, please refer to the source code or use browser DevTools on the official site*
+
+## License
+This project is licensed under the **MIT License**.  
+See the [LICENSE](LICENSE) file for details.
